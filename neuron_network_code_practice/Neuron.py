@@ -71,12 +71,15 @@ class Layer(object):
             5. elu
         
         """
-        self.data = np.array(data)
+        data = np.array(data)
+
+        self.data = data
         self.neuron_number = neuron_number
-        self.neurons = [Neuron(weights=np.ones(self.data.shape), bias=0) for i in range(neuron_number)]
+        self.neurons = [Neuron(weights=self.__weight_init(data.shape[0]), bias=0) for i in range(neuron_number)]
         self.activate_function = activate_function    
         self.AFModel = AF.NNActivator() # 激活函数模型
-
+    
+    
     def feedforward(self):
         """
 
@@ -99,7 +102,30 @@ class Layer(object):
             self.neurons[index].set_result(result = result[index])
 
         return result
-            
+    
+    def __weight_init(self, in_neuron_numbers):
+        """
+
+        小随机数初始化
+
+        Parameters
+        ----------
+        in_neuron_numbers : (1_number) the number of neurons in the previous layer
+
+         Returns
+        -------
+        weights : {array-like, np.array } of shape(1_samples, n_in_depth)
+
+        """
+        weights = np.random.randn(in_neuron_numbers) / np.sqrt(in_neuron_numbers)
+        
+        return weights
+
+    def get_weights(self):
+        for i in range(self.neuron_number):
+            print(self.neurons[i].get_weight())
+    
+    
 
         
 
@@ -114,8 +140,10 @@ input_data = np.array([-1,1,2])
 
 layer_1 = Layer(data = input_data, neuron_number=2, activate_function="sigmoid")
 result = layer_1.feedforward()
+layer_1.get_weights()
 
 layer_2 = Layer(data = result, neuron_number=3,  activate_function="sigmoid")
 result = layer_2.feedforward()
+layer_2.get_weights()
 
-print(result)
+print(result,"test")
