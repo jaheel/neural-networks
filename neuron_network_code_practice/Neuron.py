@@ -189,7 +189,7 @@ class Layer(object):
     
         
 class Network(object):
-    def __init__(self, input_data, labels, learn_rate = 0.01, mse_error_rate = 0.01):
+    def __init__(self, input_data, labels, learn_rate = 0.01, mse_error_rate = 0.01, max_iter = 100000):
         """
 
         Parameters
@@ -200,13 +200,16 @@ class Network(object):
 
         learn_rate : (1_number) BP algorithm learn rate
 
-        mse_error : (1_number) range(0,1) (default:0.01)
+        mse_error : (1_number) range(0,1) (default: 0.01)
+
+        max_iter : the max number of iterations(default: 100000)
 
         """
         self.input_data = input_data
         self.labels = labels
         self._learn_rate = learn_rate
         self.__mse_error_rate = mse_error_rate
+        self.__max_iter = max_iter
 
         self._head = None
         self._tail = None
@@ -308,10 +311,14 @@ class Network(object):
         预测
 
         """
+        iter_number = 0
+        
         self.__feedforward()
+        
 
-        while self.__cost_function_MSE() > self.__mse_error_rate:
+        while self.__cost_function_MSE() > self.__mse_error_rate and iter_number < self.__max_iter:
             
+            iter_number += 1
             self.__backward()
             self.__feedforward()
 
