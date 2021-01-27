@@ -4,10 +4,15 @@ class cov2D(object):
     def __init__(self, input_data, filter, stride = 1, padding = 1):
         """
 
-        @params input_data : origin data, 2D matrix
-        @params filter : filter matrix (3X3) or (5X5)
-        @params stride : (default: 1)
-        @params padding : (dafault: 1)
+        Parameters
+        ----------
+        input_data : {array-like} of shape (n_col, n_row) origin data, 2D matrix
+        
+        filter : {array-like} of shape (filter_size, filter_size) filter matrix (3X3) or (5X5)
+        
+        stride : (1_number)  default is 1
+        
+        padding : (1_number) dafault is 1
 
         """
         self.input_data = input_data
@@ -20,9 +25,13 @@ class cov2D(object):
     
         A 2D convolution operation
 
-        @params input_data : {np.array, [n,n](same to filter.shape)} 
+        Paramters
+        ---------
+        input_data : {array-like} of shape(filter_size, filter_size)
 
-        @return result : 1_number
+        Returns
+        -------
+        result : (1_number)
         """
         if input_data.shape[0] != self.filter.shape[0] or input_data.shape[1] != self.filter.shape[1]:
             pass
@@ -40,9 +49,9 @@ class cov2D(object):
 
         padding data
 
-        @params pad_add_number : padding times
-
-        @params input_data : after padding
+        Parameters
+        ----------
+        pad_add_number : padding times
 
         """
         vol = np.zeros(self.input_data.shape[0])
@@ -60,9 +69,9 @@ class cov2D(object):
 
         卷积运算，输出矩阵
     
-        
-
-        @return result : np.array 2D
+        Returns
+        -------
+        result : {array-like} of shape ( (input_size-filter_size)/stride + 1, (input_size-filter_size)/stride + 1 )
         """
 
 
