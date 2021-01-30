@@ -74,7 +74,7 @@ class cov2D(object):
         return np.array(result)
 
 
-class CovKernel(object):
+class ConvKernel(object):
     def __init__(self, kernel_size, input_shape, strides):
         """convolution kernel tensor(3-dim) init
         
@@ -219,10 +219,16 @@ class CovKernel(object):
         Parameters
         ----------
         input_data : {array-like, tensor(3-dim)} of shape (in_data_col, in_data_row, channel)
+
+        Returns
+        -------
+        result : {array-like, tensor(3-dim)} of shape (out_data_col, out_data_row, channel)
         
         """
         self.__input = input_data
         self.__output = self.__conv(input_data=input_data, weights = self.__weights, strides = self.__strides) + self.__b
+
+        return self.__output
 
     def backward_pass(self, error, learn_rate, activation_name='none'):
         """backward operation
