@@ -197,14 +197,19 @@ class ConvKernel(object):
                  else : {array-like, tensor(3-dim)} of shape (out_data_col, out_data_row, channel)
         """
         
+        output_height = int( (input_data.shape[0] - weights.shape[0]) / strides[0] + 1)
+        output_wide = int( (input_data.shape[1] - weights.shape[1]) / strides[1] + 1)
+
+
         if _axis == 1:
-            result = np.zeros(self.__output_shape)
+            
+            result = np.zeros((output_height, output_wide))
         
             for channel_index in range(self.__channel):
                 result += self.__single_conv(input_data = input_data[:, :, channel_index], filter = weights[:, :, channel_index], strides = strides)
 
         else:
-            result = np.zeros(shape=(self.__output_shape[0], self.__output_shape[1], self.__channel))
+            result = np.zeros(shape=(output_height, output_wide, self.__channel))
             
             for channel_index in range(self.__channel):
                 result[:, :, channel_index] = self.__single_conv(input_data = input_data[:, :, channel_index], filter = weights[:, :, channel_index], strides = strides) 
@@ -274,15 +279,17 @@ class ConvKernel(object):
             for x_index in range(output_delta.shape[1]):
                 X[ self.__kernel_height - 1 + y_index * self.__strides[0],
                 self.__kernel_wide - 1 + x_index * self.__strides[1], :] = output_delta[ y_index, x_index, :]
-            
+        print("X shape:", X.shape)
+        print("X : ", X) 
+        print("flip weights shape : ", self.__flip_weights().shape)   
         # step 3: calculate delta of pre layer
 
         # 'error_{cur_layer}' conv 'rot180(W)' 
         flip_conv_weights = self.__conv( input_data = X, weights = self.__flip_weights(), strides = (1, 1), _axis = 0)
-
+        print("flip_conv_weights shape: ", flip_conv_weights.shape)
         # 'error_{cur_layer-1}' = 'error_{cur_layer}' conv 'rot180(W)' dot-multi 'activation_prime'
-        delta = flip_conv_weights * np.reshape( ActivationFunction.activation_prime(activation_name = activation_name, input_data = self.__input), flip_conv_weights.shapes)
-        
+        delta = flip_conv_weights * np.reshape( ActivationFunction.activation_prime(activation_name = activation_name, input_data = self.__input), flip_conv_weights.shape)
+        print("delta shape:", delta.shape)
         # step 4 : update weights and bias
         weights_delta = self.__conv(input_data = self.__input, weights = X[self.__kernel_height-1 : 1-self.__kernel_height, self.__kernel_height-1 : 1-self.__kernel_height, :], strides=(1, 1), _axis = 0)
     
