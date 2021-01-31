@@ -43,12 +43,14 @@ class PoolLayer(Layer):
 
         return self.__output
 
-    def back_propagation(self, error):
+    def back_propagation(self, error, learn_rate = 1):
         """backward
 
         Parameters
         ----------
         error : {array-like, tensor(3-dim)} of shape (out_data_col, out_data_row, channel)
+
+        learn_rate : {float-like, scalar}
 
         Returns
         -------
