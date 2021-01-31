@@ -69,27 +69,29 @@ class DenseLayer(Layer):
         error_pre : {array-like, vector} of shape (in_neurals)
         """
         out_delta = error * ActivationFunction.activation_prime(input_data = self.__output, activation_name = self.activation_name)
-
+        
         if self.activation_name == 'softmax':
             out_delta = error.dot(ActivationFunction.activation_prime(input_data = self.__output, activation_name = self.activation_name))
-        
+            out_delta = np.matrix(out_delta)
+
         weights_delta = np.matrix(self.__input).T.dot(out_delta)
 
         input_delta = out_delta.dot(self.__weights.T)
 
         self.__update_params(weights_delta = weights_delta, bias_delta = out_delta, learn_rate = learn_rate)
 
-        return input_delta
+        result = np.array(input_delta)
+        return result.flatten()
 
 
 # test_data = np.random.randint(5, size=(5))
 # print(test_data)
 
-# test_layer = DenseLayer(shape = (5, 3), activation = 'relu')
+# test_layer = DenseLayer(shape = (5, 3), activation = 'softmax')
 # test_out = test_layer.forward_propagation(in_data = test_data)
 # print(test_out)
 
 # test_error = np.array([1, 0, 1])
-# print(test_error)
+# print(test_error.shape)
 # test_pre_error = test_layer.back_propagation( error = test_error, learn_rate = 1)
 # print(test_pre_error)
