@@ -8,6 +8,8 @@ Convolutional Neural Network
 
 
 
+# 卷积层
+
 ## 卷积和卷积核
 
 卷积核：也是一个矩阵，从数学上称为算子(option)，对输入矩阵进行变换。输入、输出的维数没变，但数值变了。
@@ -194,3 +196,81 @@ $$
 [卷积神经网络CNN BP算法推导](https://www.cnblogs.com/chenjieyouge/p/12318116.html)
 
 [卷积神经网络的Python实现](https://leonzhao.cn/2018/11/04/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84Python%E5%AE%9E%E7%8E%B0%EF%BC%88%E4%B8%89%EF%BC%89%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/)
+
+
+
+# 池化层
+
+作用：
+
+* 减少计算量
+
+  > 减少特征图尺寸，减少后面的层的计算量
+
+* 提高多尺度信息
+
+  > 如果存在多个池化层，就相当于网络中构造了一个多尺度特征金字塔，多尺度金字塔有利于提高检测/识别的稳定性
+
+## forward
+
+经过池化层后输出的高度和宽度分别为：
+$$
+H^l = (H^{l-1} + 2 \times p_h^{l-1} - k_h^{l-1}) / s_h^{l-1} + 1 \\
+W^l = (W^{l-1} + 2 \times p_w^{l-1} - k_w^{l-1}) / s_w^{l-1} + 1
+$$
+
+
+最大池化的前向公式：
+$$
+z_{c,i,j}^l = \max_{i \cdot s_h^{l-1} \le m < i \cdot s_h^{l-1} + k_h^{l-1} \\ j \cdot s_w^{l-1} \le n < j \cdot s_w^{l-1} + k_w^{l-1}} (p z_{c,i,j}^{l-1}) \space \space \space \space \space i \in[0, H^l - 1], j \in [0, W^l - 1]
+$$
+
+
+平均池化的前向公式：
+$$
+z_{c,i,j}^l = \sum_{m = i \cdot s_h^{l-1}}^{i \cdot s_h^{l-1} + k_h^{l-1} - 1} \sum_{n = j \cdot s_w^{l-1}}^{j \cdot s_w^{l-1} + k_w^{l-1} - 1} (p z_{c,i,j}^{l-1})/(k_h^{l-1} \cdot k_w^{l-1}) \space \space \space \space \space i \in [0, H^l - 1], j \in [0, W^l - 1]
+$$
+
+
+
+
+## backward
+
+由BP反向传播公式：
+$$
+\delta_{i}^{k-1} = \delta_{j}^k \nabla{f(a_j^k)} w_i^k
+$$
+
+* 池化层没有激励函数$f()$，可认为激励函数$f(x)=x$，其导数$\nabla f(x) = 1$
+* 池化层没有可学习的权重$w$，可认为$w=1$
+
+
+
+则上面的反向传播公式简化为：
+$$
+\delta_i^{k-1} = \delta_{j}^k
+$$
+
+
+1. mean pooling
+
+   > mean pooling的前向传播是把一个patch中的值求取平均来做pooling
+   >
+   > 反向传播的过程就是把某个元素的梯度等分为n份分配给前一层
+   >
+   > PS ： 保证池化前后的梯度（残差）之和保持不变
+
+2. max pooling
+
+   > 把梯度传给前一层最大的那一个像素，其他像素不接受梯度，置为0
+
+
+
+## Reference
+
+[池化层的反向传播](https://blog.csdn.net/csuyzt/article/details/82633051?utm_medium=distribute.pc_relevant.none-task-blog-baidujs_baidulandingword-6&spm=1001.2101.3001.4242)
+
+[池化层反向传播公式推导](https://blog.csdn.net/z0n1l2/article/details/80892519?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-4.control&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-4.control)
+
+[池化层的反向传播是怎么实现的](https://blog.csdn.net/qq_21190081/article/details/72871704)
+
