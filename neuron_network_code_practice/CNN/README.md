@@ -274,3 +274,131 @@ $$
 
 [池化层的反向传播是怎么实现的](https://blog.csdn.net/qq_21190081/article/details/72871704)
 
+
+
+# 全连接层
+
+本质上就是最初的神经网络(NN)
+
+## forward
+
+前向传播公式：
+$$
+a^l = \sigma(z^l) = \sigma(a^{l-1}W^l + B^l )
+$$
+具体推导：
+$$
+z_{i}^l = \sum_{p=1}^{p_{l-1}} \bigg{(} a_{p}^{l-1} * w_{p,i}^l \bigg{)} + b_i^l \space \space \space i=1,2,\dots, K
+$$
+
+
+## backward
+
+### MSE
+
+输出层：
+$$
+E = \frac{1}{2}(t - a)^2 = \frac{1}{2} \sum_{i=1}^{K}(t_i - a_i)^2
+$$
+误差展开到隐层：
+$$
+E = \frac{1}{2} \sum_{i=1}^K \lbrack t_i - \sigma(z_i) \rbrack ^2
+  = \frac{1}{2} \sum_{i=1}^K \lbrack t_i - \sigma(\sum_{j=0}^m    a_j w_{ji} ) \rbrack ^2
+$$
+
+
+针对当前层：
+$$
+\begin{equation}
+\begin{split}
+
+\frac{\partial E}{\partial{w_{pi}}}  &= \frac{\partial E}{\partial a_i} \frac{\partial a_i}{\partial z_i} \frac{\partial z_i}{\partial w_{pi}} \\
+&= (a_i^l - t_i^l) \cdot \sigma'(z_i) \cdot a_p^{l-1} \\
+&= \delta_i \cdot \sigma'(z_i) \cdot a_p^{l-1} \\
+
+\frac{\partial E}{ \partial{b_{i}}} &= \frac{\partial E}{\partial a_i} \frac{\partial a_i}{\partial z_i} \frac{\partial z_i}{\partial b_{i}} \\
+&= (a_i^l - t_i^l) \cdot \sigma'(z_i) \cdot 1 \\
+& = \delta_i \cdot \sigma'(z_i)
+
+\end{split}
+\end{equation}
+$$
+
+
+### cross entropy error function
+
+交叉熵损失函数（又称为softmax loss)：
+$$
+L = - \sum_{i=1}^n y_i \cdot \ln{(a_i)}
+$$
+
+初始输入：
+$$
+z = [z_1, z_2, \dots , z_n]
+$$
+
+经过softmax：
+$$
+a_i = \frac{e^{z_i}}{\sum_{k=1}^n e^{z_k}}
+$$
+链式法则：(a, z)均是(1,n)的向量
+$$
+\frac{\partial L}{\partial z} = \frac{\partial L}{\partial a} * \frac{\partial a}{\partial z}
+$$
+假设只有$y_j=1$，其余$y_i = 0$，则有：
+$$
+L = - y_j \ln(a_j) = - \ln{(a_j)}
+$$
+
+$$
+\frac{\partial L}{\partial a} = [0,0,\dots,- \frac{1}{a_j},\dots,0]
+$$
+
+$$
+\frac{\partial a}{\partial z} =
+\begin{bmatrix}
+
+\frac{\partial{a_1}}{\partial{z_1}} & \frac{\partial{a_1}}{\partial{z_2}} & \dots & \frac{\partial{a_1}}{\partial{z_n}} \\
+\vdots & \vdots & & \vdots \\
+\frac{\partial{a_j}}{\partial{z_1}} & \frac{\partial{a_j}}{\partial{z_2}} & \dots & \frac{\partial{a_j}}{\partial{z_n}} \\
+\vdots & \vdots & & \vdots \\
+\frac{\partial{a_n}}{\partial{z_1}} & \frac{\partial{a_n}}{\partial{z_2}} & \dots & \frac{\partial{a_n}}{\partial{z_n}}
+\end{bmatrix}
+$$
+
+Jocobian矩阵每一行对应着$\frac{\partial{a_i}}{\partial{z}}$
+
+由于$\frac{\partial L}{\partial a}$只有第j列不为0，由矩阵乘法，其实我们只要求$\frac{\partial a}{\partial z}$的第j行，也即$\frac{\partial a_j}{\partial z}$
+$$
+\frac{\partial L}{\partial z} = -\frac{1}{a_j} * \frac{\partial a_j}{\partial z}
+$$
+其中：
+$$
+a_j = \frac{e^{z_j}}{\sum_{k=1}^n e^{z_k}}
+$$
+
+* 当$i \neq j$时：
+  $$
+  \frac{a_j}{z_i} = \frac{0-e^{z_j}\cdot e^{z_i}}{(\sum_k^n e^{z_k})^2} = -a_j \cdot a_i \\
+  \frac{\partial L}{\partial z_i} = -a_j \cdot a_i \cdot (- \frac{1}{a_j}) = a_i
+  $$
+
+* 当$i = j$时：
+  $$
+  \frac{a_j}{z_i} = \frac{e^{z_j} \cdot \sum_k^n e^{z_k} -e^{z_j}\cdot e^{z_i}}{(\sum_k^n e^{z_k})^2} = a_j - a_j^2 \\
+  \frac{\partial L}{\partial z_i} = (a_j - a_j^2) \cdot (- \frac{1}{a_j}) = a_j - 1
+  $$
+
+
+
+从而推出：
+$$
+\frac{\partial L}{\partial z} = [a_1,a_2,\dots,a_j-1,\dots,a_n] = a-y
+$$
+
+
+## Reference
+
+[15分钟搞定Softmax Loss求导](https://zhuanlan.zhihu.com/p/105758059)
+
+[反向传播算法”过程及公式推导](https://blog.csdn.net/ft_sunshine/article/details/90221691)
