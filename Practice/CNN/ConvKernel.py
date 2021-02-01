@@ -62,11 +62,11 @@ class cov2D(object):
 
         result = []
 
-        for y_index in range(filter_number, self.input_data.shape[0]-filter_number, self.strides[1]):
+        for y_index in range(0, self.input_data.shape[0] - self.filter.shape[0] + 1, self.strides[0]):
             result_x = []
             
-            for x_index in range(filter_number, self.input_data.shape[1]-filter_number, self.strides[0]):
-                input_matrix = self.input_data[y_index - filter_number : y_index + filter_number + 1, x_index - filter_number : x_index + filter_number + 1]
+            for x_index in range(0, self.input_data.shape[1]-self.filter.shape[1] + 1, self.strides[1]):
+                input_matrix = self.input_data[y_index : y_index + self.filter.shape[0], x_index : x_index + self.filter.shape[1]]
                 result_x.append(self.__cov_single(input_data = input_matrix))
 
             result.append(result_x)
@@ -279,19 +279,18 @@ class ConvKernel(object):
             for x_index in range(output_delta.shape[1]):
                 X[ self.__kernel_height - 1 + y_index * self.__strides[0],
                 self.__kernel_wide - 1 + x_index * self.__strides[1], :] = output_delta[ y_index, x_index, :]
-        print("X shape:", X.shape)
-        print("X : ", X) 
-        print("flip weights shape : ", self.__flip_weights().shape)   
+       
         # step 3: calculate delta of pre layer
 
         # 'error_{cur_layer}' conv 'rot180(W)' 
         flip_conv_weights = self.__conv( input_data = X, weights = self.__flip_weights(), strides = (1, 1), _axis = 0)
-        print("flip_conv_weights shape: ", flip_conv_weights.shape)
+        
         # 'error_{cur_layer-1}' = 'error_{cur_layer}' conv 'rot180(W)' dot-multi 'activation_prime'
         delta = flip_conv_weights * np.reshape( ActivationFunction.activation_prime(activation_name = activation_name, input_data = self.__input), flip_conv_weights.shape)
-        print("delta shape:", delta.shape)
+        
+        temp_weights = X[self.__kernel_height-1 : 1-self.__kernel_height, self.__kernel_height-1 : 1-self.__kernel_height, :]
         # step 4 : update weights and bias
-        weights_delta = self.__conv(input_data = self.__input, weights = X[self.__kernel_height-1 : 1-self.__kernel_height, self.__kernel_height-1 : 1-self.__kernel_height, :], strides=(1, 1), _axis = 0)
+        weights_delta = self.__conv(input_data = self.__input, weights = temp_weights , strides=(1, 1), _axis = 0)
     
         self.__update_params(w_delta = weights_delta, b_delta = np.sum(error), learn_rate = learn_rate)
         

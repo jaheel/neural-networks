@@ -61,8 +61,8 @@ class ConvLayer(Layer):
         ----------
         in_data_shape : {tuple-like, vector_3} of shape (in_data_col, in_data_row, in_data_channel)
         """
-        output_height = int( (in_data_shape[0] - self.__kernel_size[0] + 1) / self.__strides[0] )
-        output_wide = int( (in_data_shape[1] - self.__kernel_size[1] + 1) / self.__strides[1] )
+        output_height = int( (in_data_shape[0] - self.__kernel_size[0] ) / self.__strides[0] + 1 )
+        output_wide = int( (in_data_shape[1] - self.__kernel_size[1] ) / self.__strides[1] + 1 )
         
         self.__output_size = (output_height, output_wide,  self.__filters)
         self.__output = np.zeros(self.__output_size)
@@ -79,19 +79,15 @@ class ConvLayer(Layer):
 
         self.__output_init(in_data_shape = self.__input_padding_shape)
         
-        print("-----input----")
-        print(self.__input)
 
         if not self.flag:
             self.__kernels = [ConvKernel(kernel_size = self.__kernel_size, input_shape = self.__input_padding_shape, strides = self.__strides) for _ in range(self.__filters) ]
             self.flag = True
 
         for kernel_index, kernel in enumerate(self.__kernels):
-            print("-----kernel property--")
-            print(kernel.kernel_property_print())
+            
             self.__output[:, :, kernel_index] = kernel.forward_pass(input_data = self.__input)
-            print("----output----")
-            print(self.__output[:, :, kernel_index])
+        
 
         
         return ActivationFunction.activation(input_data = self.__output, activation_name = self.activation_name)

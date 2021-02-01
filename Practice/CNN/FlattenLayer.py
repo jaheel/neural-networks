@@ -4,6 +4,7 @@ from Layer import Layer
 class FlattenLayer(Layer):
     def __init__(self):
         self.__input_shape = None
+        self.name = 'flatten'
     
     def forward_propagation(self, in_data):
         """forward

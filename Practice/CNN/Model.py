@@ -165,7 +165,7 @@ class Model(object):
 
         for epoch_index in range(epochs):
             loss = 0
-
+            print(loss)
             for sample_index in range(len(X)):
                 single_sample_train_out = X[sample_index]
 
