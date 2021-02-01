@@ -3,7 +3,7 @@ from Layer import Layer
 from PoolMethod import PoolMethod
 
 class PoolLayer(Layer):
-    def __init__(self, input_shape, filter_size = (2, 2), strides = (2, 2), pool_method = 'MAX', layer_name = 'none'):
+    def __init__(self, input_shape, filter_size = (2, 2), strides = (2, 2), pool_method = 'MAX', name = 'none'):
         """Pool layer init
 
         Parameters
@@ -16,13 +16,13 @@ class PoolLayer(Layer):
 
         pool_method : {string-like, scalar} value of {'MAX'(default), 'AVG'}
 
-        layer_name : {string-like, scalar} default is 'none'
+        name : {string-like, scalar} default is 'none'
         """
         
         self.input_shape = input_shape
         self.filter_size = filter_size
         self.pool_method = pool_method
-        self.layer_name = layer_name
+        self.name = name
         self.strides = strides
 
     def forward_propagation(self, in_data):
