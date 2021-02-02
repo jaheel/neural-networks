@@ -18,6 +18,7 @@ numpy : >= 1.19.5
 * [c2_activation_function](/Theory/c2_activation_function)
 * [c3_dropout](/Theory/c3_dropout)
 * [c4_gradient_descend](/Theory/c4_gradient_descend)
+* [c5_LRN_and_BN](/Theory/c5_LRN_and_BN)
 
 
 
