@@ -19,6 +19,7 @@ numpy : >= 1.19.5
 * [c3_dropout](/Theory/c3_dropout)
 * [c4_gradient_descend](/Theory/c4_gradient_descend)
 * [c5_LRN_and_BN](/Theory/c5_LRN_and_BN)
+* [Transformer_CV](/Theory/Transformer_CV)
 
 
 
