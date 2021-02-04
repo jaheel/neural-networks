@@ -1,6 +1,6 @@
 # neural-networks
 
-Use numpy to implements relevant neural network.
+
 
 
 
@@ -25,5 +25,13 @@ numpy : >= 1.19.5
 
 ## Practice
 
+Use numpy to implements relevant neural network.
+
 * [CNN](/Practice/CNN)
 * [NN](/Practice/NN)
+
+
+
+## Practice(tensorflow)
+
+* [use keras implements](/Practice/keras_reproduce_NN)
