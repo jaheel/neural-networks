@@ -20,6 +20,7 @@ numpy : >= 1.19.5
 * [c4_gradient_descend](/Theory/c4_gradient_descend)
 * [c5_LRN_and_BN](/Theory/c5_LRN_and_BN)
 * [Transformer_CV](/Theory/Transformer_CV)
+* [Network_architecture](/Theory/Network_architecture)
 
 
 
