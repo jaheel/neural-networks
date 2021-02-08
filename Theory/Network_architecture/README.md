@@ -229,3 +229,38 @@ Reduction-B模块（17x17变为8x8）：
 [GooLeNet(从Inception v1到v4的演进)](https://my.oschina.net/u/876354/blog/1637819)
 
 [图像CV之3——GooLeNet(Inception v1—Inception v4)](https://zhuanlan.zhihu.com/p/73828787)
+
+
+
+# ResNet
+
+## Dataset
+
+ImageNet
+
+ILSVRC & COCO 2015
+
+
+
+## Architecture
+
+![image-20210208233957857](images/image-20210208233957857.png)
+
+![image-20210208234018469](images/image-20210208234018469.png)
+
+
+
+## Highlight
+
+Residual Block
+
+![image-20210208233810013](images/image-20210208233810013.png)
+
+
+
+## Reference
+
+[重读经典：完全解析特征学习大杀器ResNet](https://zhuanlan.zhihu.com/p/268308900)
+
+[ResNet详解与分析](https://www.cnblogs.com/shine-lee/p/12363488.html)
+
