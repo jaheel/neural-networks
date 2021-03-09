@@ -36,3 +36,9 @@ Use numpy to implements relevant neural network.
 ## Practice(tensorflow)
 
 * [use keras implements](/Practice/keras_reproduce_NN)
+
+
+
+## Practice(Pytorch)
+
+* [use pytorch implements](/Practice/pytorch_CNN)
